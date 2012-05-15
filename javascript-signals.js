@@ -3,6 +3,17 @@
     // local reference
     var SK = (alias) ? window[alias] = {} : window.SK = {};
 
+
+    /**
+     * Crockford's beget function
+     */
+    var beget = function (o) {
+        function F() {}
+        F.prototype = o;
+        return new F();
+    }
+
+
     /**
      * Abstract Signal dispatcher
      */
@@ -45,6 +56,32 @@
         }
     }
 
+
+    /**
+     * OnceSignal one-time dispatcher
+     */
+    SK.OnceSignal = function() {
+        this._slotCollection = null;
+        this.initialize();
+    }
+
+    SK.OnceSignal.prototype = beget(SK.AbstractSignal.prototype);
+
+    SK.OnceSignal.prototype._slotAdded = false;
+
+    SK.OnceSignal.prototype.initialize = function() {
+        this._slotCollection = new SK.SlotCollection();
+    }
+
+    SK.OnceSignal.prototype.add = function(handler, options) {
+        var opt = options || {};
+        if(this._slotAdded == true)
+            throw new Error('Cannot add more then one slot for a OnceSignal type');
+        this._slotAdded = true;
+        return this.register(handler, opt.context);
+    }
+
+
     /**
      * Simple Signal object
      */
@@ -53,16 +90,17 @@
         this.initialize();
     }
 
-    SK.Signal.prototype = {
-        initialize: function() {
-            this._slotCollection = new SK.SlotCollection();
-        },
+    SK.Signal.prototype = beget(SK.AbstractSignal.prototype);
 
-        add: function(handler, options) {
-            var opt = options || {};
-            return this.register(handler, opt.context);
-        }
+    SK.Signal.prototype.initialize = function() {
+        this._slotCollection = new SK.SlotCollection();
     }
+
+    SK.Signal.prototype.add = function(handler, options) {
+        var opt = options || {};
+        return this.register(handler, opt.context);
+    }
+
 
     /**
      * PrioritySignal
@@ -74,42 +112,17 @@
         this.initialize();
     }
 
-    SK.PrioritySignal.prototype = {
-        initialize: function() {
-            this._slotCollection = new SK.SlotCollection();
-        },
+    SK.PrioritySignal.prototype = beget(SK.AbstractSignal.prototype);
 
-        add: function(handler, options) {
-            var opt = options || {};
-            return this.registerByPriority(handler, opt.context, opt.priority);
-        }
+    SK.PrioritySignal.prototype.initialize = function() {
+        this._slotCollection = new SK.SlotCollection();
     }
 
-    /**
-     * OnceSignal
-     * 
-     * @description One-time dispatcher
-     */
-    SK.OnceSignal = function() {
-        this._slotCollection = null;
-        this.initialize();
+    SK.PrioritySignal.prototype.add = function(handler, options) {
+        var opt = options || {};
+        return this.registerByPriority(handler, opt.context, opt.priority);
     }
 
-    SK.OnceSignal.prototype = {
-        _slotAdded: false,
-
-        initialize: function() {
-            this._slotCollection = new SK.SlotCollection();
-        },
-
-        add: function(handler, options) {
-            var opt = options || {};
-            if(this._slotAdded == true)
-                throw new Error('Cannot add more then one slot for a OnceSignal type');
-            this._slotAdded = true;
-            return this.register(handler, opt.context);
-        }
-    }
 
     /**
      * Collections of slots which will reference the signal's slot/s
@@ -157,6 +170,7 @@
                 this._list.splice(slotIndex, 1);
         }
     }
+
 
     /**
      * Actual handler function of the Slot/Signal system
@@ -219,4 +233,4 @@
             return this._handler;
         }
     }
-}('Seeknal'));
+}('SK'));
