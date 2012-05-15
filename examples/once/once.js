@@ -13,7 +13,7 @@ HelloWorldSignal.prototype = {
 		this.messageListener = new MessageListener();
 
 		this.radio.messageChanged.add(this.messageListener.onMessageChanged);
-		// an error will occur if we add another handler to the OnceSignal
+		// an error will occur if we add another(more than one) handler to the OnceSignal
 		// this.radio.messageChanged.add(this.messageListener.onMessageChanged);
 	},
 
