@@ -1,4 +1,3 @@
-Javascript-Signals
-==================
+# Javascript-Signals
 
-A javascript signal implementation
+A javascript signal implementation, inspired by Robert Penner's as3-signals library.
