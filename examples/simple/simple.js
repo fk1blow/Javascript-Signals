@@ -38,7 +38,7 @@ Radio.prototype = {
 	message: 'Hello World',
 
 	initialize: function() {
-		this.messageChanged = new SK.PrioritySignal();
+		this.messageChanged = new SK.SimpleSignal();
 	},
 
 	sendMessage: function(val) {
