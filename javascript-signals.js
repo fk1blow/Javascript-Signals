@@ -143,7 +143,7 @@
         },
 
         remove: function(slot) {
-            var index = this._getIndex(listener);
+            var index = this._getIndex(slot);
             this._removeSlot(index);
         },
 
