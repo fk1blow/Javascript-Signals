@@ -43,7 +43,7 @@
         },
 
         dispatch: function(message) {
-            var list = this._slotCollection.getSlotList();
+            var list = this._slotCollection.getSlotList().slice();
             for(var i = 0; i < list.length; i++)
                 list[i].execute(message);
             return this;
