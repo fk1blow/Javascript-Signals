@@ -49,6 +49,10 @@
             return this;
         },
 
+        /**
+         * @author http://millermedeiros.github.com/js-signals/
+         * 
+         */
         _addByPriority: function(slot) {
             var stack = this._slotCollection.getSlotList(), i = stack.length, needle = slot.getPriority();
             do { i--; } while(stack[i] && slot.getPriority() <= stack[i].getPriority());
